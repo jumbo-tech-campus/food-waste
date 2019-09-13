@@ -13,7 +13,14 @@ class RecipesController < ApplicationController
   def index
     repository = ElasticSearch::RecipeRepository.new
 
-    recipes = repository.search(query: { match: { name: params[:q] } }).to_a
+    recipes = repository.search(query: {
+      bool: {
+        should: [
+            { match: { name: params[:q] }},
+            { match: { ingredients: params[:q] }}
+        ]
+      }
+    }, size: 250).to_a
     render json: recipes, adapter: :json
   end
 end

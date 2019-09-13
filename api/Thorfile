@@ -49,9 +49,13 @@ class Cache < Thor
       begin
         r = JSON.parse(recipe_prop)
 
+        ingredients = r['ingredients'].inject("") do |memo, ingredient|
+          memo << "#{ingredient['name']} "
+        end
+
         recipe = Recipe.new(id: r['id'], name: r['name'], image_url: r['imageInfo']['primaryView'].first['url'],
           cooking_time: r['cookingTime'], number_of_portions: r['numberOfPortions'],
-          difficulty_level: r['difficultyLevel'], calories: r['calories']
+          difficulty_level: r['difficultyLevel'], calories: r['calories'], ingredients: ingredients
         )
         repository.save(recipe)
         puts "Indexed recipe #{recipe_id}"
