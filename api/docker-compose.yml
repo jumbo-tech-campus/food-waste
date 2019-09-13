@@ -1,0 +1,87 @@
+version: '3.6'
+
+services:
+  web:
+    build:
+      context: .
+    depends_on:
+      - es01
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: bash -c "rm -f /app/tmp/pids/server.pid; bundle exec rails s -p 3001 -b '0.0.0.0'"
+    ports:
+      - 3001:3001
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
+    container_name: es01
+    environment:
+      - node.name=es01
+      - discovery.seed_hosts=es02
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - esnet
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
+    container_name: es02
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis:/data
+  thor_runner:
+    build:
+      context: .
+      dockerfile: ./thor/Dockerfile
+    depends_on:
+      - redis
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: bash -c "bundle exec thor cache:all"
+  redis_commander:
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    depends_on:
+      - redis
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - "8081:8081"
+
+volumes:
+  esdata01:
+    driver: local
+  esdata02:
+    driver: local
+  redis:
+    driver: local
+
+networks:
+  esnet:

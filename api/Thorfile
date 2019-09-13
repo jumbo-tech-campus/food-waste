@@ -1,0 +1,10 @@
+require 'dotenv/load'
+require_relative 'config/environment.rb'
+
+class Cache < Thor
+  desc "cache data", "Extract recipes from mobile API and store in Redis cache"
+  def all
+    puts "Caching recipes locally"
+    
+  end
+end
