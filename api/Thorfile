@@ -19,7 +19,7 @@ class Cache < Thor
         sleep(0.2)
         json_recipe = JSON.parse(recipe_response.body)
 
-        client.hset('recipes', json_recipe['recipe']['data']['id'], json_recipe['recipe']['data'])
+        client.hset('recipes', json_recipe['recipe']['data']['id'], json_recipe['recipe']['data'].to_json)
         puts "Cached recipe #{json_recipe['recipe']['data']['id']}"
       end
 
