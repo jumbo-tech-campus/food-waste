@@ -30,8 +30,6 @@ services:
       - esdata01:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-    networks:
-      - esnet
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
     container_name: es02
@@ -48,8 +46,6 @@ services:
         hard: -1
     volumes:
       - esdata02:/usr/share/elasticsearch/data
-    networks:
-      - esnet
   redis:
     image: redis:alpine
     volumes:
@@ -60,6 +56,7 @@ services:
       dockerfile: ./thor/Dockerfile
     depends_on:
       - redis
+      - es01
     volumes:
       - ./:/app
     working_dir: /app
@@ -82,6 +79,3 @@ volumes:
     driver: local
   redis:
     driver: local
-
-networks:
-  esnet:
