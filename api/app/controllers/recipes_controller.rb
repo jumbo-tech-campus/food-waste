@@ -9,4 +9,11 @@ class RecipesController < ApplicationController
     )
     render json: recipe, adapter: :json
   end
+
+  def index
+    repository = ElasticSearch::RecipeRepository.new
+
+    recipes = repository.search(query: { match: { name: params[:q] } }).to_a
+    render json: recipes, adapter: :json
+  end
 end
