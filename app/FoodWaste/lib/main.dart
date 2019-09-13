@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_waste/search_results_page.dart';
+import 'package:food_waste/ui/jumbo_ui.dart';
 
 import 'enter_ingredients_page.dart';
-import 'package:food_waste/ui/jumbo_ui.dart';
 
 void main() => runApp(FoodWasteApp());
 

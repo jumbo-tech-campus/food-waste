@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_waste/search_results_page.dart';
 import 'package:food_waste/ui/jumbo_ui.dart';
+
+import 'datalayer/api.dart';
 
 class EnterIngredientsPage extends StatefulWidget {
   EnterIngredientsPage({Key key}) : super(key: key);
@@ -19,6 +22,12 @@ class _EnterIngredientsPageState extends State<EnterIngredientsPage> {
     });
   }
 
+  void _clearIngredients() {
+    setState(() {
+      _addedIngredients = [];
+    });
+  }
+
   void _clearEditTextArea() {
     editTextController.clear();
   }
@@ -28,90 +37,123 @@ class _EnterIngredientsPageState extends State<EnterIngredientsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          // Retrieve the text the that user has entered by using the
-          // TextEditingController.
           content: Text(ingredient + " added to your list."),
         );
       },
     );
   }
 
+  Future _loadRecipes() async {
+    final results = await Api().getRecipes(_addedIngredients);
+    final resultsPage = SearchResultsPage(recipes: results);
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => resultsPage));
+
+    _clearEditTextArea();
+    _clearIngredients();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("What\'s in your fridge?"),
-      ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Flexible(
-                  child: TextField(
-                    controller: editTextController,
-                    onSubmitted: (text) {
-                      _addIngredient(text); // Append Text to the list
-                      _clearEditTextArea(); // Clear the Text area
-                      setState(() {}); // Redraw the Stateful Widget
-                    },
-                    decoration:
-                        InputDecoration(helperText: "Enter your ingredient"),
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                ),
-                Flexible(
-                    child: MaterialButton(
-                  child: Text("Add to list"),
-                  color: JumboUI.yellowColor,
-                  onPressed: () {
-                    _showConfirmationAlertDialog(editTextController.text);
-                    _addIngredient(editTextController.text);
-                    _clearEditTextArea();
-                  },
-                )),
-              ],
-            ),
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        title: Text(
+          "What\'s in your fridge?",
+          style: TextStyle(
+            fontFamily: 'JumboTheSans-Bold',
+            fontSize: 16.0,
           ),
-          new Expanded(
-              child: new ListView.builder(
-                  itemCount: _addedIngredients.length,
-                  itemBuilder: (BuildContext ctxt, int Index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: new Text(_addedIngredients[Index]),
-                    );
-                  })),
-          Column(children: <Widget>[
+        ),
+      ),
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: MaterialButton(
-                height: 36,
-                minWidth: 200,
-                color: JumboUI.yellowColor,
-                onPressed: () => {
-
-
-
-
-
-                },
-                child: Text(
-                  "Show me my options",
-                  style: new TextStyle(
-                    fontFamily: 'JumboTheSans-Bold',
-                    fontSize: 14.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Flexible(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: TextField(
+                        controller: editTextController,
+                        onSubmitted: (text) {
+                          _addIngredient(text);
+                          _clearEditTextArea();
+                          setState(() {});
+                        },
+                        decoration: InputDecoration(
+                            helperText: "Enter your ingredient"),
+                        style: Theme.of(context).textTheme.body1,
+                      ),
+                    ),
                   ),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(18.0),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: MaterialButton(
+                      height: 36,
+                      minWidth: 44,
+                      color: Colors.white,
+                      onPressed: () {
+                        _showConfirmationAlertDialog(editTextController.text);
+                        _addIngredient(editTextController.text);
+                        _clearEditTextArea();
+                      },
+                      child: Text(
+                        "Add to list",
+                        style: TextStyle(
+                          fontFamily: 'JumboTheSans-Bold',
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            )
-          ])
-        ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _addedIngredients.length,
+                itemBuilder: (BuildContext ctxt, int Index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      _addedIngredients[Index],
+                      style: TextStyle(
+                        fontFamily: 'JumboTheSans',
+                        fontSize: 14.0,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: MaterialButton(
+        height: 36,
+        minWidth: MediaQuery.of(context).size.width - 32,
+        color: JumboUI.yellowColor,
+        onPressed: () => _loadRecipes(),
+        child: Text(
+          "Show me my options",
+          style: new TextStyle(
+            fontFamily: 'JumboTheSans-Bold',
+            fontSize: 14.0,
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(18.0),
+        ),
       ),
     );
   }

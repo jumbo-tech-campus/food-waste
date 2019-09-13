@@ -5,49 +5,47 @@ import 'package:url_launcher/url_launcher.dart';
 import 'model/recipe.dart';
 
 class SearchResultsPage extends StatefulWidget {
-  SearchResultsPage({Key key}) : super(key: key);
+  SearchResultsPage({Key key, this.recipes}) : super(key: key);
+
+  List<Recipe> recipes;
 
   @override
   _SearchResultsPageState createState() => _SearchResultsPageState();
 }
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
-
-  List<Recipe> recipes = [
-    Recipe.stub,
-    Recipe.stub,
-    Recipe.stub,
-    Recipe.stub,
-    Recipe.stub,
-    Recipe.stub,
-  ];
-
   Future _recipeSelected(Recipe recipe) async {
-    print("${recipe.id} - ${recipe.name}");
+    print("Selected ${recipe.id} - ${recipe.name}");
 
-    String url = "jumboapp://jumbo.com/recipes?id=${recipe.id}";
-//    if (await canLaunch(url)) {
-    print("JumboApp: $url");
-      await launch(url);
-//    } else {
-//      throw 'Could not launch $url';
-//    }
+    await launch("jumboapp://jumbo.com/recipes?id=${recipe.id}");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Recipes for you"),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        title: Text(
+          "What\'s in your fridge?",
+          style: TextStyle(
+            fontFamily: 'JumboTheSans-Bold',
+            fontSize: 16.0,
+          ),
         ),
-        body: ListView.builder(
-            itemCount: recipes == null ? 0 : recipes.length,
-            itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
-                onTap: () => _recipeSelected(recipes[index]),
-                child: RecipeCard(recipe: recipes[index]),
-              );
-            }),
+      ),
+      body: Container(
+        color: Colors.white,
+        child: ListView.builder(
+          itemCount: widget.recipes == null ? 0 : widget.recipes.length,
+          itemBuilder: (BuildContext context, int index) {
+            return GestureDetector(
+              onTap: () => _recipeSelected(widget.recipes[index]),
+              child: RecipeCard(recipe: widget.recipes[index]),
+            );
+          },
+        ),
+      ),
     );
   }
 }
