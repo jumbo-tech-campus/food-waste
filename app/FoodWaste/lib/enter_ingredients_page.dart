@@ -45,38 +45,46 @@ class _EnterIngredientsPageState extends State<EnterIngredientsPage> {
         ),
         body: Column(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Flexible(
-                  child: TextField(
-                    controller: editTextController,
-                    onSubmitted: (text) {
-                      _addIngredient(text);  // Append Text to the list
-                      _clearEditTextArea();     // Clear the Text area
-                      setState(() {});   // Redraw the Stateful Widget
-                    },
-                    decoration:
-                        InputDecoration(helperText: "Enter your ingredient"),
-                    style: Theme.of(context).textTheme.body1,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Flexible(
+                    child: TextField(
+                      controller: editTextController,
+                      onSubmitted: (text) {
+                        _addIngredient(text);  // Append Text to the list
+                        _clearEditTextArea();     // Clear the Text area
+                        setState(() {});   // Redraw the Stateful Widget
+                      },
+                      decoration:
+                          InputDecoration(helperText: "Enter your ingredient"),
+                      style: Theme.of(context).textTheme.body1,
+                    ),
                   ),
-                ),
-                Flexible(
-                    child: MaterialButton(
-                  child: Text("Add to list"),
-                  onPressed: () {
-                    _showConfirmationAlertDialog(editTextController.text);
-                    _addIngredient(editTextController.text);
-                    _clearEditTextArea();
-                  },
-                )),
-              ],
+                  Flexible(
+                      child: MaterialButton(
+                    child: Text("Add to list"),
+                    color: JumboUI.yellowColor,
+                    onPressed: () {
+                      _showConfirmationAlertDialog(editTextController.text);
+                      _addIngredient(editTextController.text);
+                      _clearEditTextArea();
+                    },
+                  )),
+                ],
+              ),
             ),
             new Expanded(
                 child: new ListView.builder
                   (
                     itemCount: _addedIngredients.length,
                     itemBuilder: (BuildContext ctxt, int Index) {
-                      return new Text(_addedIngredients[Index]);
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: new Text(_addedIngredients[Index]),
+                      );
                     }
                 )
             )
