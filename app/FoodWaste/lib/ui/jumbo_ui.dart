@@ -31,5 +31,6 @@ Map<int, Color> _greyYellow = {
 class JumboUI {
   static MaterialColor yellowColor = MaterialColor(0xFFFCD513, _jumboYellow);
   static MaterialColor greyColor = MaterialColor(0xFFABABAB, _greyYellow);
-//  static MaterialColor whiteColor = Colors.white;
+
+
 }

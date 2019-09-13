@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'jumbo_ui.dart';
+import 'package:food_waste/ui/jumbo_ui.dart';
 
 class EnterIngredientsPage extends StatefulWidget {
-  EnterIngredientsPage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  EnterIngredientsPage({Key key}) : super(key: key);
 
   @override
   _EnterIngredientsPageState createState() => _EnterIngredientsPageState();
@@ -24,24 +21,29 @@ class _EnterIngredientsPageState extends State<EnterIngredientsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text("What\'s in your fridge?"),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-
-            ],
-          ),
+        body: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Flexible(
+                  child: TextField(
+                    decoration:
+                        InputDecoration(helperText: "Enter your ingredient"),
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                ),
+                Flexible(child: MaterialButton(child: Text("Add"))),
+              ],
+            ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => {
-
-          },
+          onPressed: () => {},
           tooltip: 'Increment',
           child: Icon(Icons.add),
           backgroundColor: JumboUI.yellowColor,
-        )
-    );
+        ));
   }
 }
