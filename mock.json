@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ID",
+    "name": "NAME",
+    "image_url": "IMAGE_URL",
+    "cooking_time": 5,
+    "number_of_portions": 2,
+    "difficulty_level": "easy",
+    "calories": 100
+  },
+  {
+    "id": "ID2",
+    "name": "NAME2",
+    "image_url": "IMAGE_URL_2",
+    "cooking_time": 10,
+    "number_of_portions": 4,
+    "difficulty_level": "hard",
+    "calories": 200
+  }
+]
