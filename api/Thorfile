@@ -2,9 +2,16 @@ require 'dotenv/load'
 require_relative 'config/environment.rb'
 
 class Cache < Thor
-  desc "cache data", "Extract recipes from mobile API and store in Redis cache"
+  desc "cache and index", "Cache data and add to search index"
   def all
+    redis
+    to_search_index
+  end
+
+  desc "cache data", "Extract recipes from mobile API and store in Redis cache"
+  def redis
     puts "Caching recipes locally"
+    $stdout.flush
     offset = 0
     client = Redis.new(host: 'redis')
 
@@ -21,11 +28,38 @@ class Cache < Thor
 
         client.hset('recipes', json_recipe['recipe']['data']['id'], json_recipe['recipe']['data'].to_json)
         puts "Cached recipe #{json_recipe['recipe']['data']['id']}"
+        $stdout.flush
       end
 
       break if offset > json_response['recipes']['total']
     end
 
     puts "Cached #{client.hlen('recipes')} recipes"
+  end
+
+  desc "index recipes", "Index recipes in Elasticsearch"
+  def to_search_index
+    client = Redis.new(host: 'redis')
+    repository = ElasticSearch::RecipeRepository.new
+
+    repository.create_index! force: true
+    recipes_hash = client.hgetall('recipes')
+
+    recipes_hash.each do |recipe_id, recipe_prop|
+      begin
+        r = JSON.parse(recipe_prop)
+
+        recipe = Recipe.new(id: r['id'], name: r['name'], image_url: r['imageInfo']['primaryView'].first['url'],
+          cooking_time: r['cookingTime'], number_of_portions: r['numberOfPortions'],
+          difficulty_level: r['difficultyLevel'], calories: r['calories']
+        )
+        repository.save(recipe)
+        puts "Indexed recipe #{recipe_id}"
+        $stdout.flush
+      rescue
+        puts "Could not index recipe #{recipe_id}"
+        $stdout.flush
+      end
+    end
   end
 end

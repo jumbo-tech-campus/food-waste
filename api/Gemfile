@@ -5,6 +5,7 @@ gem 'dotenv-rails', groups: [:development, :test]
 gem 'thor'
 gem 'dogstatsd-ruby'
 gem 'httparty'
+gem 'elasticsearch-persistence'
 
 ruby '~> 2.6.0'
 
