@@ -47,21 +47,13 @@ class Cache < Thor
 
     recipes_hash.each do |recipe_id, recipe_prop|
       begin
-        r = JSON.parse(recipe_prop)
+        recipe = RecipeFactory.create_from_json(recipe_prop)
 
-        ingredients = r['ingredients'].inject("") do |memo, ingredient|
-          memo << "#{ingredient['name']} "
-        end
-
-        recipe = Recipe.new(id: r['id'], name: r['name'], image_url: r['imageInfo']['primaryView'].first['url'],
-          cooking_time: r['cookingTime'], number_of_portions: r['numberOfPortions'],
-          difficulty_level: r['difficultyLevel'], calories: r['calories'], ingredients: ingredients
-        )
         repository.save(recipe)
         puts "Indexed recipe #{recipe_id}"
         $stdout.flush
-      rescue
-        puts "Could not index recipe #{recipe_id}"
+      rescue StandardError => e
+        puts "Could not index recipe #{recipe_id}: \n#{e}"
         $stdout.flush
       end
     end
