@@ -20,18 +20,43 @@ class RecipesController < ApplicationController
       }
     end
 
-    recipes = repository.search(query: {
-      function_score: {
-        query: {
-          match: {
-            ingredients: params[:q]
+    should_terms = params[:q].split(',').map do |query|
+      {
+        match: {
+          ingredients: {
+            query: query,
+            operator: :or
           }
-        },
-        boost_mode: :replace,
-        score_mode: :sum,
-        functions: terms
+        }
       }
-    }, size: 250).to_a
+    end
+    query = {
+      query: {
+        function_score: {
+          query: {
+            match: {
+              ingredients: params[:q]
+            }
+          },
+          boost_mode: :replace,
+          score_mode: :sum,
+          functions: terms
+        }
+      },
+      rescore: {
+        window_size: 250,
+        query: {
+          rescore_query: {
+            bool: {
+              must: should_terms
+            }
+          }
+        }
+      },
+      size: 250
+    }
+
+    recipes = repository.search(query).to_a
 
     response.headers['Access-Control-Allow-Origin'] = "*"
     render json: recipes
