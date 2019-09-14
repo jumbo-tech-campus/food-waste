@@ -3,14 +3,6 @@ class Recipe < ActiveModelSerializers::Model
     :difficulty_level, :calories, :ingredients
 
   def to_hash
-    {
-      id: id,
-      name: name,
-      difficulty_level: difficulty_level,
-      image_url: image_url,
-      calories: calories,
-      cooking_time: cooking_time,
-      ingredients: ingredients
-    }
+    @attributes
   end
 end
