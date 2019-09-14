@@ -18,7 +18,19 @@ class _EnterIngredientsPageState extends State<EnterIngredientsPage> {
 
   void _addIngredient(String ingredient) {
     setState(() {
-      _addedIngredients.add(ingredient);
+      if (ingredient.length > 1) {
+        _addedIngredients.add(ingredient);
+        _showConfirmationAlertDialog(ingredient);
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text("Please enter a valid ingridient"),
+            );
+          },
+        );
+      }
     });
   }
 
@@ -100,7 +112,6 @@ class _EnterIngredientsPageState extends State<EnterIngredientsPage> {
                       minWidth: 44,
                       color: Colors.white,
                       onPressed: () {
-                        _showConfirmationAlertDialog(editTextController.text);
                         _addIngredient(editTextController.text);
                         _clearEditTextArea();
                       },
