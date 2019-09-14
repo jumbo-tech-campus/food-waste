@@ -17,6 +17,7 @@ class RecipesController < ApplicationController
         ]
       }
     }, size: 250).to_a
-    render json: recipes, adapter: :json, root: :recipes
+
+    render json: recipes
   end
 end
