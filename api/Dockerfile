@@ -26,6 +26,6 @@ RUN bundle install
 ADD . .
 
 RUN bundle exec rails assets:clobber
-RUN RAILS_ENV=production bundle exec rails assets:precompile
+RUN bundle exec rails assets:precompile
 
 CMD bash -c "rm -f /app/tmp/pids/server.pid; bundle exec rails s -p 3001 -b '0.0.0.0'"
