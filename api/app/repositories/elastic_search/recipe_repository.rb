@@ -7,9 +7,10 @@ class ElasticSearch::RecipeRepository
   index_name 'recipes'
   klass Recipe
 
-  settings number_of_shards: 1 do
-    mapping do
-      indexes :text,  analyzer: 'snowball'
+  settings number_of_shards: 1,
+    analysis: { analyzer: { my_analyzer: { tokenizer: 'standard', filter: ['lowercase', 'snow'] } }, filter: { snow: { type: 'snowball', language: 'Dutch' }} } do
+    mappings do
+      indexes :ingredients, type: 'text', analyzer: :my_analyzer
     end
   end
 
