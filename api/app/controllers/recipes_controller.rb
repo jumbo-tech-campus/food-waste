@@ -9,12 +9,27 @@ class RecipesController < ApplicationController
   def index
     repository = ElasticSearch::RecipeRepository.new
 
+    terms = params[:q].split(',').map do |query|
+      {
+          filter: {
+            term: {
+              ingredients: query
+            }
+          },
+          weight: 1
+      }
+    end
+
     recipes = repository.search(query: {
-      bool: {
-        should: [
-            { match: { name: params[:q] }},
-            { match: { ingredients: params[:q] }}
-        ]
+      function_score: {
+        query: {
+          match: {
+            ingredients: params[:q]
+          }
+        },
+        boost_mode: :replace,
+        score_mode: :sum,
+        functions: terms
       }
     }, size: 250).to_a
 
