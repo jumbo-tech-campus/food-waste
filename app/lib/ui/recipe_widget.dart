@@ -21,7 +21,7 @@ class RecipeCard extends StatelessWidget {
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child:
-                        Image.network(recipe.imageUrl, width: 90, height: 90)),
+                    recipe.imageUrl == null ? Image.asset("assets/placeholder.png") : Image.network(recipe.imageUrl, width: 90, height: 90)),
               ),
               Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +40,7 @@ class RecipeCard extends StatelessWidget {
                       ),
                     ),
                     Row(children: <Widget>[
-                      Image.asset("assets/ic_person.png", width: 24, height: 24),
+                      Image.asset("assets/person.png", width: 24, height: 24),
                       Padding(
                         padding: const EdgeInsets.only(left: 8, right: 8),
                         child: Text(
@@ -53,7 +53,7 @@ class RecipeCard extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 8),
-                        child: Image.asset("assets/ic_time.png", width: 24, height: 24),
+                        child: Image.asset("assets/time.png", width: 24, height: 24),
                       ),
                       Text(
                         "${recipe.cookingTime} min",
