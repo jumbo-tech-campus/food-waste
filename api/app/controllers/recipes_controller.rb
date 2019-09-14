@@ -18,6 +18,7 @@ class RecipesController < ApplicationController
       }
     }, size: 250).to_a
 
+    response.headers['Access-Control-Allow-Origin'] = "*"
     render json: recipes
   end
 end
