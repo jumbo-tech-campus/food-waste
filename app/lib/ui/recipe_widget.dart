@@ -17,7 +17,7 @@ class RecipeCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.only(right: 0),
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child:
@@ -29,7 +29,7 @@ class RecipeCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0, bottom: 8),
                       child: Container(
-                        width: 280,
+                        width: 264,
                         child: Text(recipe.name,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 4,
@@ -44,7 +44,7 @@ class RecipeCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 8, right: 8),
                         child: Text(
-                          "${recipe.numberOfPortions == null ? 4 : 0} portions",
+                          "${recipe.numberOfPortions} portions",
                           style: TextStyle(
                             fontFamily: 'JumboTheSans',
                             fontSize: 14.0,
