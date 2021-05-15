@@ -1,4 +1,4 @@
-FROM ruby:2.6
+FROM ruby:3.0
 
 # Installation of dependencies
 RUN apt-get update && apt-get install -y apt-utils curl build-essential
